@@ -19,5 +19,5 @@ interface LikeService {
     suspend fun likePost(@Body like: LikeModel): ResponseModel<LikeModel>
 
     @DELETE("likes/{id}")
-    suspend fun unlikePost(@Path("id") likeId: Int): ResponseModel<Unit>
+    suspend fun unlikePost(@Path("id") likeId: Int): ResponseModel<Unit?>
 }

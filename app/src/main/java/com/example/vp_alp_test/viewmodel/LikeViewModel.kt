@@ -19,38 +19,35 @@ class LikeViewModel : ViewModel() {
     private val _userLikes = MutableStateFlow<Set<Int>>(emptySet())
     val userLikes = _userLikes.asStateFlow()
 
-    private var isToggling = false
-
     fun toggleLike(postId: Int) {
-        if (isToggling) return  // Prevent double-toggling
-        isToggling = true
-
         viewModelScope.launch {
             try {
                 val isCurrentlyLiked = postId in _userLikes.value
                 val currentCount = _postLikeCount.value[postId] ?: 0
 
                 if (isCurrentlyLiked) {
-                    // Unlike
+                    // Unlike - Update UI state immediately for better UX
                     _userLikes.update { it - postId }
                     _postLikeCount.update { it + (postId to (currentCount - 1)) }
 
+                    // Then perform the API call
                     val existingLike = likeRepository.getLikesForPost(postId)
                         .firstOrNull { it.userId == 1 }
 
                     if (existingLike != null) {
                         val success = likeRepository.unlikePost(existingLike.id)
                         if (!success) {
-                            // Revert if failed
+                            // Revert UI state if API call failed
                             _userLikes.update { it + postId }
                             _postLikeCount.update { it + (postId to currentCount) }
                         }
                     }
                 } else {
-                    // Like
+                    // Like - Update UI state immediately
                     _userLikes.update { it + postId }
                     _postLikeCount.update { it + (postId to (currentCount + 1)) }
 
+                    // Then perform the API call
                     val newLike = LikeModel(
                         id = 0,
                         postId = postId,
@@ -59,37 +56,31 @@ class LikeViewModel : ViewModel() {
 
                     val addedLike = likeRepository.likePost(newLike)
                     if (addedLike == null) {
-                        // Revert if failed
+                        // Revert UI state if API call failed
                         _userLikes.update { it - postId }
                         _postLikeCount.update { it + (postId to currentCount) }
                     }
                 }
             } catch (e: Exception) {
                 Log.e("LikeViewModel", "Error toggling like", e)
-            } finally {
-                isToggling = false
             }
         }
     }
 
     fun loadPostLikes(postId: Int) {
-        if (isToggling) return  // Skip loading if currently toggling
-
         viewModelScope.launch {
             try {
                 val likes = likeRepository.getLikesForPost(postId)
+                // Update like count
+                _postLikeCount.update { currentCounts ->
+                    currentCounts + (postId to likes.size)
+                }
 
-                // Only update if not currently toggling
-                if (!isToggling) {
-                    _postLikeCount.update { currentCounts ->
-                        currentCounts + (postId to likes.size)
-                    }
-
-                    val isLikedByUser = likes.any { it.userId == 1 }
-                    _userLikes.update { currentLikes ->
-                        if (isLikedByUser) currentLikes + postId
-                        else currentLikes - postId
-                    }
+                // Update user's like status
+                val isLikedByUser = likes.any { it.userId == 1 }
+                _userLikes.update { currentLikes ->
+                    if (isLikedByUser) currentLikes + postId
+                    else currentLikes - postId
                 }
             } catch (e: Exception) {
                 Log.e("LikeViewModel", "Error loading post likes", e)
@@ -97,4 +88,3 @@ class LikeViewModel : ViewModel() {
         }
     }
 }
-
