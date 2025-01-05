@@ -13,7 +13,7 @@ interface CommentService {
     suspend fun getCommentsForPost(@Path("id") postId: Int): ResponseModel<List<CommentModel>>
 
     @POST("comments")
-    suspend fun commentOnPost(@Body comment: CommentModel): ResponseModel<CommentModel?>
+    suspend fun commentOnPost(@Body comment: CommentModel): ResponseModel<CommentModel>
 
     @DELETE("comments/{id}")
     suspend fun deleteComment(@Path("id") commentId: Int): ResponseModel<Unit?>

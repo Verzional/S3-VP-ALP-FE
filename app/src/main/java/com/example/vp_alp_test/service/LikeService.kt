@@ -2,6 +2,7 @@ package com.example.vp_alp_test.service
 
 import com.example.vp_alp_test.model.LikeModel
 import com.example.vp_alp_test.model.ResponseModel
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -19,5 +20,5 @@ interface LikeService {
     suspend fun likePost(@Body like: LikeModel): ResponseModel<LikeModel>
 
     @DELETE("likes/{id}")
-    suspend fun unlikePost(@Path("id") likeId: Int): ResponseModel<Unit?>
+    suspend fun unlikePost(@Path("id") likeId: Int): Response<Void>
 }

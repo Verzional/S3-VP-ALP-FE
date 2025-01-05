@@ -35,6 +35,7 @@ fun PostCard(
     post: PostModel,
     isLiked: Boolean,
     likeCount: Int,
+    commentCount: Int,
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit
 ) {
@@ -45,7 +46,7 @@ fun PostCard(
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
         ) {
             Row(
@@ -97,7 +98,7 @@ fun PostCard(
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
+            Spacer(modifier = Modifier.padding(vertical = 4.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
@@ -119,7 +120,7 @@ fun PostCard(
                     )
                 }
 
-                Spacer(Modifier.padding(2.dp))
+                Spacer(Modifier.padding(end = 2.dp))
 
                 Text(
                     text = likeCount.toString(), fontSize = 16.sp, color = Color.White
@@ -138,14 +139,18 @@ fun PostCard(
                     )
                 }
 
-                Spacer(Modifier.padding(2.dp))
+                Spacer(Modifier.padding(end = 2.dp))
 
                 Text(
-                    text = "100", fontSize = 16.sp, color = Color.White
+                    text = commentCount.toString(), fontSize = 16.sp, color = Color.White
                 )
             }
 
-            HorizontalDivider(thickness = 1.dp, color = Color.White)
+            Spacer(Modifier.padding(vertical = 4.dp))
+
+            HorizontalDivider(thickness = 0.5.dp, color = Color.White)
+
+            Spacer(Modifier.padding(top = 4.dp, bottom = 8.dp))
         }
     }
 }

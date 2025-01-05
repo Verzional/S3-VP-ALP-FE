@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vp_alp_test.ui.theme.VP_ALP_TestTheme
 import com.example.vp_alp_test.view.PostView
+import com.example.vp_alp_test.viewmodel.CommentViewModel
+import com.example.vp_alp_test.viewmodel.LikeViewModel
 import com.example.vp_alp_test.viewmodel.PostViewModel
 
 class MainActivity : ComponentActivity() {
@@ -15,9 +17,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VP_ALP_TestTheme {
-                val postViewModel: PostViewModel = viewModel()
+                val postViewModel = viewModel<PostViewModel>()
+                val likeViewModel = viewModel<LikeViewModel>()
+                val commentViewModel = viewModel<CommentViewModel>()
 
-                PostView(postViewModel = postViewModel)
+                PostView(
+                    postViewModel = postViewModel,
+                    likeViewModel = likeViewModel,
+                    commentViewModel = commentViewModel
+                )
             }
         }
     }

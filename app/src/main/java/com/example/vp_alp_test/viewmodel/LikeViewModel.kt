@@ -19,27 +19,33 @@ class LikeViewModel : ViewModel() {
     private val _userLikes = MutableStateFlow<Set<Int>>(emptySet())
     val userLikes = _userLikes.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
     fun toggleLike(postId: Int) {
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 val isCurrentlyLiked = postId in _userLikes.value
                 val currentCount = _postLikeCount.value[postId] ?: 0
 
                 if (isCurrentlyLiked) {
-                    // Unlike - Update UI state immediately for better UX
-                    _userLikes.update { it - postId }
-                    _postLikeCount.update { it + (postId to (currentCount - 1)) }
-
-                    // Then perform the API call
+                    // Unlike
                     val existingLike = likeRepository.getLikesForPost(postId)
                         .firstOrNull { it.userId == 1 }
 
                     if (existingLike != null) {
+                        // Update UI state immediately for better UX
+                        _userLikes.update { it - postId }
+                        _postLikeCount.update { it + (postId to (currentCount - 1)) }
+
+                        // Then perform the API call
                         val success = likeRepository.unlikePost(existingLike.id)
                         if (!success) {
                             // Revert UI state if API call failed
                             _userLikes.update { it + postId }
                             _postLikeCount.update { it + (postId to currentCount) }
+                            Log.e("LikeViewModel", "Failed to unlike post")
                         }
                     }
                 } else {
@@ -59,10 +65,13 @@ class LikeViewModel : ViewModel() {
                         // Revert UI state if API call failed
                         _userLikes.update { it - postId }
                         _postLikeCount.update { it + (postId to currentCount) }
+                        Log.e("LikeViewModel", "Failed to like post")
                     }
                 }
             } catch (e: Exception) {
                 Log.e("LikeViewModel", "Error toggling like", e)
+            } finally {
+                _isLoading.value = false
             }
         }
     }

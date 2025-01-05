@@ -27,24 +27,37 @@ import com.example.vp_alp_test.viewmodel.PostViewModel
 @Composable
 fun PostView(
     modifier: Modifier = Modifier,
-    postViewModel: PostViewModel = PostViewModel(),
-    likeViewModel: LikeViewModel = LikeViewModel(),
-    commentViewModel: CommentViewModel = CommentViewModel()
+    postViewModel: PostViewModel,
+    likeViewModel: LikeViewModel,
+    commentViewModel: CommentViewModel
 ) {
     val posts by postViewModel.posts.collectAsState()
     val uiState by postViewModel.postUIState.collectAsState()
     val userLikes by likeViewModel.userLikes.collectAsState()
     val postLikeCount by likeViewModel.postLikeCount.collectAsState()
+    val postCommentCount by commentViewModel.postCommentCount.collectAsState()
 
     var selectedPostId by remember { mutableStateOf<Int?>(null) }
 
+    // Initial load of posts
     LaunchedEffect(Unit) {
         postViewModel.loadPosts()
     }
 
+    // Load likes and comments whenever posts change
     LaunchedEffect(posts) {
         posts.forEach { post ->
             likeViewModel.loadPostLikes(post.id)
+            commentViewModel.loadPostComments(post.id)
+        }
+    }
+
+    // Maintain likes and comments state
+    LaunchedEffect(selectedPostId) {
+        selectedPostId?.let { postId ->
+            // Refresh counts when comment overlay is opened
+            likeViewModel.loadPostLikes(postId)
+            commentViewModel.loadPostComments(postId)
         }
     }
 
@@ -64,12 +77,16 @@ fun PostView(
                 ) {
                     items(
                         items = (uiState as PostUIState.Success).posts,
-                        key = { post -> post.id }) { post ->
-                        PostCard(post = post,
-                            isLiked = post.id in userLikes,
+                        key = { post -> post.id }
+                    ) { post ->
+                        PostCard(
+                            post = post,
+                            isLiked = userLikes.contains(post.id),
                             likeCount = postLikeCount[post.id] ?: 0,
+                            commentCount = postCommentCount[post.id] ?: 0,
                             onLikeClick = { likeViewModel.toggleLike(post.id) },
-                            onCommentClick = { selectedPostId = post.id })
+                            onCommentClick = { selectedPostId = post.id }
+                        )
                     }
                 }
             }
@@ -90,12 +107,17 @@ fun PostView(
             }
         }
 
-        // Comment Overlay
         selectedPostId?.let { postId ->
             CommentOverlay(
                 postId = postId,
                 viewModel = commentViewModel,
-                onClose = { selectedPostId = null })
+                onClose = {
+                    // Refresh counts when comment overlay is closed
+                    likeViewModel.loadPostLikes(postId)
+                    commentViewModel.loadPostComments(postId)
+                    selectedPostId = null
+                }
+            )
         }
     }
 }

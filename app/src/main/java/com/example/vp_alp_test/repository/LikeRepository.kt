@@ -52,8 +52,8 @@ class LikeRepository {
     suspend fun unlikePost(likeId: Int): Boolean = withContext(Dispatchers.IO) {
         try {
             val response = likeService.unlikePost(likeId)
-            Log.d("LikeRepository", "Response: $response")
-            response.status == "success"
+            Log.d("LikeRepository", "Unlike Response Code: ${response.code()}")
+            response.isSuccessful
         } catch (e: Exception) {
             Log.e("LikeRepository", "Error unliking post", e)
             false

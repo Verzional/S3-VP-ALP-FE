@@ -19,9 +19,23 @@ class CommentRepository {
             } else {
                 emptyList()
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("CommentRepository", "Error fetching comments for post $postId", e)
             emptyList()
+        }
+    }
+
+    suspend fun addComment(comment: CommentModel): CommentModel = withContext(Dispatchers.IO) {
+        try {
+            val response = commentService.commentOnPost(comment)
+            if (response.status == "success") {
+                response.data
+            } else {
+                throw Exception("Failed to add comment")
+            }
+        } catch (e: Exception) {
+            Log.e("CommentRepository", "Error adding comment", e)
+            throw e
         }
     }
 }
