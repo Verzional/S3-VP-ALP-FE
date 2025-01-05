@@ -4,10 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.vp_alp_test.ui.theme.VP_ALP_TestTheme
-import com.example.vp_alp_test.view.PostView
-import com.example.vp_alp_test.viewmodel.PostViewModel
+import com.example.vp_alp_test.view.App
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,10 +16,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VP_ALP_TestTheme {
-                val postViewModel: PostViewModel = viewModel()
-
-                PostView(postViewModel = postViewModel)
+                // TODO: add routers here
+                App()
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview3() {
+    VP_ALP_TestTheme {
+        App()
     }
 }

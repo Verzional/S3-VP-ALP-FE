@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">VP_ALP_Test</string>
+    <string name="app_name">TodoListApp</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="usernameText">Username</string>
+    <string name="passwordText">Password</string>
+    <string name="registerText">Register</string>
+    <string name="loginText">Login</string>
+    <string name="confirm_password_text">Confirm Password</string>
+    <string name="already_have_an_account_text">"Already have an account? "</string>
+    <string name="sign_in_text">Sign In</string>
+    <string name="don_t_have_an_account_yet_text">"Don't have an account yet? "</string>
+    <string name="sign_up_text">Sign Up</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="emailText">Email</string>
+    <string name="today_tasks_text">Today\'s Tasks</string>
+    <string name="title_text">Title</string>
+    <string name="description_text">Description</string>
+    <string name="due_date_text">Due Date</string>
+    <string name="pick_date_text">Pick Date</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="save_text">Save</string>
+    <string name="status_detail_text">"Status: "</string>
+    <string name="priority_detail_text">"Priority: "</string>
+    <string name="due_date_detail_text">"Due Date: "</string>
+    <string name="description_detail_text">"Description: "</string>
 </resources>
