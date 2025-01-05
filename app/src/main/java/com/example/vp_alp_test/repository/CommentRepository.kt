@@ -8,11 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class CommentRepository {
-    private val commentService = AppClient.retrofit.create(CommentService::class.java)
+    private val service = AppClient.retrofit.create(CommentService::class.java)
 
     suspend fun getCommentsForPost(postId: Int): List<CommentModel> = withContext(Dispatchers.IO) {
         try {
-            val response = commentService.getCommentsForPost(postId)
+            val response = service.getCommentsForPost(postId)
             Log.d("CommentRepository", "Response: $response")
             if (response.status == "success") {
                 response.data
@@ -27,7 +27,7 @@ class CommentRepository {
 
     suspend fun addComment(comment: CommentModel): CommentModel = withContext(Dispatchers.IO) {
         try {
-            val response = commentService.commentOnPost(comment)
+            val response = service.commentOnPost(comment)
             if (response.status == "success") {
                 response.data
             } else {

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LikeViewModel : ViewModel() {
-    private val likeRepository = LikeRepository()
+    private val repository = LikeRepository()
 
     private val _postLikeCount = MutableStateFlow<Map<Int, Int>>(emptyMap())
     val postLikeCount = _postLikeCount.asStateFlow()
@@ -31,7 +31,7 @@ class LikeViewModel : ViewModel() {
 
                 if (isCurrentlyLiked) {
                     // Unlike
-                    val existingLike = likeRepository.getLikesForPost(postId)
+                    val existingLike = repository.getLikesForPost(postId)
                         .firstOrNull { it.userId == 1 }
 
                     if (existingLike != null) {
@@ -40,7 +40,7 @@ class LikeViewModel : ViewModel() {
                         _postLikeCount.update { it + (postId to (currentCount - 1)) }
 
                         // Then perform the API call
-                        val success = likeRepository.unlikePost(existingLike.id)
+                        val success = repository.unlikePost(existingLike.id)
                         if (!success) {
                             // Revert UI state if API call failed
                             _userLikes.update { it + postId }
@@ -60,7 +60,7 @@ class LikeViewModel : ViewModel() {
                         userId = 1
                     )
 
-                    val addedLike = likeRepository.likePost(newLike)
+                    val addedLike = repository.likePost(newLike)
                     if (addedLike == null) {
                         // Revert UI state if API call failed
                         _userLikes.update { it - postId }
@@ -79,7 +79,7 @@ class LikeViewModel : ViewModel() {
     fun loadPostLikes(postId: Int) {
         viewModelScope.launch {
             try {
-                val likes = likeRepository.getLikesForPost(postId)
+                val likes = repository.getLikesForPost(postId)
                 // Update like count
                 _postLikeCount.update { currentCounts ->
                     currentCounts + (postId to likes.size)

@@ -7,10 +7,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class PostRepository {
-    private val postService = AppClient.retrofit.create(PostService::class.java)
+    private val service = AppClient.retrofit.create(PostService::class.java)
 
     suspend fun fetchPosts(): List<PostModel> = withContext(Dispatchers.IO) {
-        val response = postService.getPosts()
+        val response = service.getPosts()
         if (response.status == "success") {
             response.data
         } else {
@@ -19,7 +19,7 @@ class PostRepository {
     }
 
     suspend fun addPost(post: PostModel): PostModel = withContext(Dispatchers.IO) {
-        val response = postService.createPost(post)
+        val response = service.createPost(post)
         if (response.status == "success") {
             response.data
         } else {

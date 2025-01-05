@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel(){
-    private val postRepository = PostRepository()
+    private val repository = PostRepository()
 
     private val _posts = MutableStateFlow<List<PostModel>>(emptyList())
     val posts = _posts
@@ -21,7 +21,7 @@ class PostViewModel : ViewModel(){
         viewModelScope.launch {
             _postUIState.value = PostUIState.Loading
             try {
-                val fetchedPosts = postRepository.fetchPosts()
+                val fetchedPosts = repository.fetchPosts()
                 _posts.value = fetchedPosts  // Update the posts flow
                 _postUIState.value = PostUIState.Success(fetchedPosts)
             } catch (e: Exception) {
@@ -32,7 +32,7 @@ class PostViewModel : ViewModel(){
 
     fun createPost(post: PostModel){
         viewModelScope.launch {
-            postRepository.addPost(post)
+            repository.addPost(post)
             loadPosts()
         }
     }

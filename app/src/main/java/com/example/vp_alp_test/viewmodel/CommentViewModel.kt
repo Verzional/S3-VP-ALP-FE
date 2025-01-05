@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CommentViewModel : ViewModel() {
-    private val commentRepository = CommentRepository()
+    private val repository = CommentRepository()
 
     private val _comments = MutableStateFlow<List<CommentModel>>(emptyList())
     val comments: StateFlow<List<CommentModel>> = _comments
@@ -36,7 +36,7 @@ class CommentViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val fetchedComments = commentRepository.getCommentsForPost(postId)
+                val fetchedComments = repository.getCommentsForPost(postId)
                 _comments.value = fetchedComments
 
                 _postCommentCount.update { currentCounts ->
@@ -62,7 +62,7 @@ class CommentViewModel : ViewModel() {
                     id = 0, postId = postId, userId = 1, content = commentText
                 )
 
-                val addedComment = commentRepository.addComment(newComment)
+                val addedComment = repository.addComment(newComment)
                 loadPostComments(postId)
                 _commentText.value = ""
             } catch (e: Exception) {

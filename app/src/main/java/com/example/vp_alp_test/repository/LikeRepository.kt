@@ -8,11 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class LikeRepository {
-    private val likeService = AppClient.retrofit.create(LikeService::class.java)
+    private val service = AppClient.retrofit.create(LikeService::class.java)
 
     suspend fun getLikesForPost(postId: Int): List<LikeModel> = withContext(Dispatchers.IO) {
         try {
-            val response = likeService.getLikesForPost(postId)
+            val response = service.getLikesForPost(postId)
             Log.d("LikeRepository", "Response: $response")
             if (response.status == "success") {
                 response.data
@@ -26,7 +26,7 @@ class LikeRepository {
     }
 
     suspend fun getLikesForUser(userId: Int): List<LikeModel> = withContext(Dispatchers.IO) {
-        val response = likeService.getLikesForUser(userId)
+        val response = service.getLikesForUser(userId)
         if (response.status == "success") {
             response.data
         } else {
@@ -36,7 +36,7 @@ class LikeRepository {
 
     suspend fun likePost(like: LikeModel): LikeModel? = withContext(Dispatchers.IO) {
         try {
-            val response = likeService.likePost(like)
+            val response = service.likePost(like)
             Log.d("LikeRepository", "Response: $response")
             if (response.status == "success") {
                 response.data
@@ -51,7 +51,7 @@ class LikeRepository {
 
     suspend fun unlikePost(likeId: Int): Boolean = withContext(Dispatchers.IO) {
         try {
-            val response = likeService.unlikePost(likeId)
+            val response = service.unlikePost(likeId)
             Log.d("LikeRepository", "Unlike Response Code: ${response.code()}")
             response.isSuccessful
         } catch (e: Exception) {
