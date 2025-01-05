@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -145,12 +144,6 @@ fun PostCard(
                     text = commentCount.toString(), fontSize = 16.sp, color = Color.White
                 )
             }
-
-            Spacer(Modifier.padding(vertical = 4.dp))
-
-            HorizontalDivider(thickness = 0.5.dp, color = Color.White)
-
-            Spacer(Modifier.padding(top = 4.dp, bottom = 8.dp))
         }
     }
 }

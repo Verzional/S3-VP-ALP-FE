@@ -1,12 +1,16 @@
 package com.example.vp_alp_test.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.vp_alp_test.ui.theme.BackgroundBlue
 import com.example.vp_alp_test.uiState.PostUIState
 import com.example.vp_alp_test.viewmodel.CommentViewModel
 import com.example.vp_alp_test.viewmodel.LikeViewModel
@@ -61,7 +66,11 @@ fun PostView(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = BackgroundBlue)
+    ) {
         when (uiState) {
             is PostUIState.Loading -> {
                 CircularProgressIndicator(
@@ -75,18 +84,27 @@ fun PostView(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(
+                    itemsIndexed(
                         items = (uiState as PostUIState.Success).posts,
-                        key = { post -> post.id }
-                    ) { post ->
-                        PostCard(
-                            post = post,
+                        key = { _, post -> post.id }) { index, post ->
+                        PostCard(post = post,
                             isLiked = userLikes.contains(post.id),
                             likeCount = postLikeCount[post.id] ?: 0,
                             commentCount = postCommentCount[post.id] ?: 0,
                             onLikeClick = { likeViewModel.toggleLike(post.id) },
-                            onCommentClick = { selectedPostId = post.id }
-                        )
+                            onCommentClick = { selectedPostId = post.id })
+
+                        if (index != (uiState as PostUIState.Success).posts.lastIndex) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            ) {
+                                Spacer(Modifier.padding(vertical = 4.dp))
+
+                                HorizontalDivider(thickness = 0.5.dp, color = Color.White)
+
+                                Spacer(Modifier.padding(top = 4.dp, bottom = 8.dp))
+                            }
+                        }
                     }
                 }
             }
@@ -108,16 +126,12 @@ fun PostView(
         }
 
         selectedPostId?.let { postId ->
-            CommentOverlay(
-                postId = postId,
-                viewModel = commentViewModel,
-                onClose = {
-                    // Refresh counts when comment overlay is closed
-                    likeViewModel.loadPostLikes(postId)
-                    commentViewModel.loadPostComments(postId)
-                    selectedPostId = null
-                }
-            )
+            CommentOverlay(postId = postId, viewModel = commentViewModel, onClose = {
+                // Refresh counts when comment overlay is closed
+                likeViewModel.loadPostLikes(postId)
+                commentViewModel.loadPostComments(postId)
+                selectedPostId = null
+            })
         }
     }
 }
