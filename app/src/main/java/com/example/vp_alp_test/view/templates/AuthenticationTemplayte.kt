@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,12 +43,14 @@ fun AuthenticationOutlinedTextField(
         singleLine = true,
         label = {
             Text(
-                text = labelText
+                text = labelText,
+                color = Color.White
             )
         },
         placeholder = {
             Text(
-                text = placeholderText
+                text = placeholderText,
+                color = Color.LightGray
             )
         },
         modifier = modifier,
@@ -55,7 +58,9 @@ fun AuthenticationOutlinedTextField(
         leadingIcon = {
             Image(
                 painter = leadingIconSrc,
-                contentDescription = null
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(Color.White),
+
             )
         },
         keyboardOptions = keyboardType,
@@ -82,13 +87,15 @@ fun PasswordOutlinedTextField(
         singleLine = true,
         label = {
             Text(
-                text = labelText
+                text = labelText,
+                color = Color.White
             )
         },
         trailingIcon = {
             Image(
                 painter = passwordVisibilityIcon,
                 contentDescription = null,
+                colorFilter = ColorFilter.tint(Color.LightGray),
                 modifier = Modifier
                     .clickable {
                         onTrailingIconClick()
@@ -97,7 +104,8 @@ fun PasswordOutlinedTextField(
         },
         placeholder = {
             Text(
-                text = placeholderText
+                text = placeholderText,
+                color = Color.LightGray
             )
         },
         visualTransformation = passwordVisibility,
@@ -106,7 +114,8 @@ fun PasswordOutlinedTextField(
         leadingIcon = {
             Image(
                 painter = painterResource(id = R.drawable.ic_password),
-                contentDescription = null
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(Color.White),
             )
         },
         keyboardOptions = KeyboardOptions(
@@ -144,7 +153,8 @@ fun AuthenticationButton(
                 text = buttonText,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                modifier = textModifier
+                modifier = textModifier,
+                color = Color.Gray
             )
         }
     }
@@ -162,12 +172,13 @@ fun AuthenticationQuestion(
         modifier = rowModifier
     ) {
         Text(
-            text = questionText
+            text = questionText,
+            color = Color.White
         )
 
         Text(
             text = actionText,
-            color = Color.Blue,
+            color = Color(0xFFD4ADFC),
             modifier = Modifier
                 .clickable {
                     onActionTextClicked()
