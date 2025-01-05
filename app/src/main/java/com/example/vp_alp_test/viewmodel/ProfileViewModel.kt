@@ -25,11 +25,11 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
     val actionState: StateFlow<ProfileUIState> = _actionState
 
     // Fetch user profile
-    fun fetchUserProfile(token: String, userId: Int) {
+    fun getUserProfile(token: String, id: Int) {
         _profileState.value = ProfileUIState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.getUserProfile(token, userId).awaitResponse()
+                val response = repository.getUserProfile(token, id).awaitResponse()
                 if (response.isSuccessful) {
                     val user = response.body()?.data
                     if (user != null) {
@@ -76,15 +76,15 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
     }
 
     // Update user profile
-    fun updateUserProfile(token: String, userId: Int, username: String?, email: String?, avatar: String?, bio: String?) {
+    fun updateUserProfile(token: String, id: Int, username: String?, email: String?, avatar: String?, bio: String?) {
         _actionState.value = ProfileUIState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.updateUserProfile(token, userId, username, email, avatar, bio).awaitResponse()
+                val response = repository.updateUserProfile(token, id, username, email, avatar, bio).awaitResponse()
                 if (response.isSuccessful) {
                     _actionState.value = ProfileUIState.Success(
                         UserModel(
-                            id = userId,
+                            id = id,
                             username = username ?: "",
                             email = email ?: "",
                             avatar = avatar,
@@ -104,15 +104,15 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
     }
 
     // Delete user profile
-    fun deleteUserProfile(token: String, userId: Int) {
+    fun deleteUserProfile(token: String, id: Int) {
         _actionState.value = ProfileUIState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.deleteUserProfile(token, userId).awaitResponse()
+                val response = repository.deleteUserProfile(token, id).awaitResponse()
                 if (response.isSuccessful) {
                     _actionState.value = ProfileUIState.Success(
                         UserModel(
-                            id = userId,
+                            id = id,
                             username = "",
                             email = "",
                             avatar = null,

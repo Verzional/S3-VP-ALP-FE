@@ -14,14 +14,14 @@ import retrofit2.http.Path
 
 interface ProfileService {
     @GET("/profile/{id}")
-    fun getUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") userId: Int): Call<GetResponse>
+    fun getUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int): Call<GetResponse>
 
     @POST("/profile/{id}")
-    fun createUserProfile(@Header("X-API-TOKEN") token: String, @Body todoModel: ProfileRequest): Call<GeneralResponseModel>
+    fun createUserProfile(@Header("X-API-TOKEN") token: String, @Body profileModel: ProfileRequest): Call<GeneralResponseModel>
 
     @PUT("/updateProfile/{id}")
-    fun updateUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") todoId: Int, @Body todoModel: ProfileRequest): Call<GeneralResponseModel>
+    fun updateUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int, @Body profileModel: ProfileRequest): Call<GeneralResponseModel>
 
     @DELETE("deleteProfile/{id}")
-    fun deleteUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") todoId: Int): Call<GeneralResponseModel>
+    fun deleteUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int): Call<GeneralResponseModel>
 }

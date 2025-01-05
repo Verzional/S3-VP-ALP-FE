@@ -49,11 +49,8 @@ class AuthenticationViewModel(
     var token: String by mutableStateOf("")
         private set
 
-    var userId: Int by mutableStateOf(0)
+    var id: Int by mutableStateOf(0)
         private set
-
-    // other properties...
-
 
     var usernameInput by mutableStateOf("")
         private set
@@ -66,18 +63,6 @@ class AuthenticationViewModel(
 
     var emailInput by mutableStateOf("")
         private set
-
-//    fun onLoginSuccess(token: String, userId: Int) {
-//        // Save token and userId locally
-//        this.token = token
-//        this.userId = userId
-//    }
-
-//    fun onRegisterSuccess(token: String, userId: Int) {
-//        // Save token and userId locally
-//        this.token = token
-//        this.userId = userId
-//    }
 
     fun changeEmailInput(emailInput: String) {
         this.emailInput = emailInput
@@ -184,7 +169,8 @@ class AuthenticationViewModel(
                             val responseData = res.body()!!.data
                             Log.d("response-data", "RESPONSE DATA: $responseData")
 
-                            saveUsernameToken(responseData.token!!, responseData.username)
+                            saveUsernameToken(responseData.token!!)
+                            saveUsernameId(responseData.id!!)
 
                             dataStatus = AuthenticationStatusUIState.Success(responseData)
 
@@ -225,7 +211,8 @@ class AuthenticationViewModel(
                         if (res.isSuccessful) {
                             val responseData = res.body()!!.data
 
-                            saveUsernameToken(responseData.token!!, responseData.username)
+                            saveUsernameToken(responseData.token!!)
+                            saveUsernameId(responseData.id!!)
 
                             dataStatus = AuthenticationStatusUIState.Success(responseData)
 
@@ -256,29 +243,35 @@ class AuthenticationViewModel(
         }
     }
 
-    fun saveUsernameToken(token: String, username: String) {
+    fun saveUsernameToken(token: String) {
         viewModelScope.launch {
             userRepository.saveUserToken(token)
-            userRepository.saveUsername(username)
+        }
+    }
+    fun saveUsernameId(id: Int) {
+        viewModelScope.launch {
+            userRepository.saveUserId(id)
         }
     }
 
     // New method to handle login success
-    fun onLoginSuccess(token: String, userId: Int, navController: NavHostController) {
+    fun onLoginSuccess(token: String, id: Int, navController: NavHostController) {
         this.token = token
-        this.userId = userId
+        this.id = id
         // Save token and user data in local storage or shared preferences
-        saveUsernameToken(token, userId.toString()) // Save token and userId if necessary
+        saveUsernameToken(token) // Save token and userId if necessary
+        saveUsernameId(id)
         // Navigate to the Profile page
         navController.navigate(PagesEnum.Profile.name)
     }
 
     // New method to handle registration success
-    fun onRegisterSuccess(token: String, userId: Int, navController: NavHostController) {
+    fun onRegisterSuccess(token: String, id: Int, navController: NavHostController) {
         this.token = token
-        this.userId = userId
+        this.id = id
         // Save token and user data in local storage or shared preferences
-        saveUsernameToken(token, userId.toString()) // Save token and userId if necessary
+        saveUsernameToken(token) // Save token and userId if necessary
+        saveUsernameId(id)
         // Navigate to the Profile page
         navController.navigate(PagesEnum.Profile.name)
     }

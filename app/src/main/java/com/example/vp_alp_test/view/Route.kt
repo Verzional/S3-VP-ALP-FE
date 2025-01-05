@@ -30,11 +30,11 @@ fun App(
 
     // Fetch the token and userId after successful login/register
     val token = authenticationViewModel.token // token saved during login/register
-    val userId = authenticationViewModel.userId // userId saved during login/register
+    val id = authenticationViewModel.id // userId saved during login/register
 
-    if (token.isNotEmpty() && userId != 0) {
+    if (token.isNotEmpty() && id != 0) {
         // Fetch user profile if token and userId are available
-        profileViewModel.fetchUserProfile(token, userId)
+        profileViewModel.getUserProfile(token, id)
     }
 
     NavHost(
@@ -71,7 +71,7 @@ fun App(
                 profileViewModel = profileViewModel,
                 navController = navController,
                 token = token,
-                userId = userId,
+                id = id,
                 context = localContext
             )
         }

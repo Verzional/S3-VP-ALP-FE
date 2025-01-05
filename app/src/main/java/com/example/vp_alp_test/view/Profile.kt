@@ -35,12 +35,12 @@ fun ProfileView(
     navController: NavHostController,
     context: Context,
     token: String,
-    userId: Int
+    id: Int
 ) {
     // Fetch the user profile when this screen is launched
     LaunchedEffect(Unit) {
-        if (token.isNotEmpty() && userId > 0) {
-            profileViewModel.fetchUserProfile(token, userId)
+        if (token.isNotEmpty() && id > 0) {
+            profileViewModel.getUserProfile(token, id)
         }
     }
 
@@ -62,7 +62,7 @@ fun ProfileView(
             ProfileContent(
                 user = user,
                 onUpdate = { username, email, avatar, bio ->
-                    profileViewModel.updateUserProfile(token, userId, username, email, avatar, bio)
+                    profileViewModel.getUserProfile(token, id)
                 }
             )
         }

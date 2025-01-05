@@ -9,21 +9,21 @@ import retrofit2.Call
 import retrofit2.Response
 
 interface ProfileRepository {
-    fun getUserProfile(token: String, userId: Int): Call<GetResponse>
+    fun getUserProfile(token: String, id: Int): Call<GetResponse>
 
     fun createUserProfile(token: String, username: String?, email: String?, avatar: String?, bio: String?): Call<GeneralResponseModel>
 
-    fun updateUserProfile(token: String, userId: Int, username: String?, email: String?, avatar: String?, bio: String?): Call<GeneralResponseModel>
+    fun updateUserProfile(token: String, id: Int, username: String?, email: String?, avatar: String?, bio: String?): Call<GeneralResponseModel>
 
-    fun deleteUserProfile(token: String, userId: Int): Call<GeneralResponseModel>
+    fun deleteUserProfile(token: String, id: Int): Call<GeneralResponseModel>
 }
 
 class NetworkProfileRepository(
     private val profileService: ProfileService
 ) : ProfileRepository {
 
-    override fun getUserProfile(token: String, userId: Int): Call<GetResponse> {
-        return profileService.getUserProfile("Bearer $token", userId)
+    override fun getUserProfile(token: String, id: Int): Call<GetResponse> {
+        return profileService.getUserProfile("Bearer $token", id)
     }
 
     override fun createUserProfile(
@@ -41,7 +41,7 @@ class NetworkProfileRepository(
 
     override fun updateUserProfile(
         token: String,
-        userId: Int,
+        id: Int,
         username: String?,
         email: String?,
         avatar: String?,
@@ -49,12 +49,12 @@ class NetworkProfileRepository(
     ): Call<GeneralResponseModel> {
         return profileService.updateUserProfile(
             token,
-            userId,
+            id,
             ProfileRequest(username, email, avatar, bio)
         )
     }
 
-    override fun deleteUserProfile(token: String, userId: Int): Call<GeneralResponseModel> {
-        return profileService.deleteUserProfile(token, userId)
+    override fun deleteUserProfile(token: String, id: Int): Call<GeneralResponseModel> {
+        return profileService.deleteUserProfile(token, id)
     }
 }
