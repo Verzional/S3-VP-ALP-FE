@@ -17,10 +17,10 @@ interface ProfileService {
     fun getUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int): Call<GetResponse>
 
     @POST("/profile/{id}")
-    fun createUserProfile(@Header("X-API-TOKEN") token: String, @Body profileModel: ProfileRequest): Call<GeneralResponseModel>
+    fun createUserProfile(@Header("X-API-TOKEN") token: String, @Body UserModel: ProfileRequest): Call<GeneralResponseModel>
 
     @PUT("/updateProfile/{id}")
-    fun updateUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int, @Body profileModel: ProfileRequest): Call<GeneralResponseModel>
+    fun updateUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int, @Body UserModel: ProfileRequest): Call<GeneralResponseModel>
 
     @DELETE("deleteProfile/{id}")
     fun deleteUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int): Call<GeneralResponseModel>

@@ -15,9 +15,9 @@ interface AuthenticationRepository {
 
 class NetworkAuthenticationRepository(
     private val authenticationAPIService: AuthenticationAPIService
-): AuthenticationRepository {
+) : AuthenticationRepository {
     override fun register(username: String, email: String, password: String): Call<UserResponse> {
-        var registerMap = HashMap<String, String>()
+        val registerMap = HashMap<String, String>()
 
         registerMap["username"] = username
         registerMap["email"] = email
@@ -27,7 +27,7 @@ class NetworkAuthenticationRepository(
     }
 
     override fun login(email: String, password: String): Call<UserResponse> {
-        var loginMap = HashMap<String, String>()
+        val loginMap = HashMap<String, String>()
 
         loginMap["email"] = email
         loginMap["password"] = password

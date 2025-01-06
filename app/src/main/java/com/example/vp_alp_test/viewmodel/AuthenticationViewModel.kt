@@ -16,7 +16,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import com.example.todolistapp.enums.PagesEnum
 import com.example.vp_alp_test.R
-import com.example.vp_alp_test.AppClient
 import com.example.vp_alp_test.CommunityApplication
 import com.example.vp_alp_test.model.ErrorModel
 import com.example.vp_alp_test.model.UserResponse
@@ -25,11 +24,13 @@ import com.example.vp_alp_test.repository.UserRepository
 import com.example.vp_alp_test.uiState.AuthenticationStatusUIState
 import com.example.vp_alp_test.uiState.AuthenticationUIState
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,6 +40,8 @@ class AuthenticationViewModel(
     private val authenticationRepository: AuthenticationRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
+    private val _userIdStateFlow = MutableStateFlow<Int>(0)  // Menyimpan ID
+    val userIdStateFlow: StateFlow<Int> = _userIdStateFlow.asStateFlow()
     private val _authenticationUIState = MutableStateFlow(AuthenticationUIState())
     val authenticationUIState: StateFlow<AuthenticationUIState>
         get() = _authenticationUIState.asStateFlow()
@@ -82,165 +85,106 @@ class AuthenticationViewModel(
 
     fun changePasswordVisibility() {
         _authenticationUIState.update { currentState ->
-            if (currentState.showPassword) {
-                currentState.copy(
-                    showPassword = false,
-                    passwordVisibility = PasswordVisualTransformation(),
-                    passwordVisibilityIcon = R.drawable.ic_password_visible
-                )
-            } else {
-                currentState.copy(
-                    showPassword = true,
-                    passwordVisibility = VisualTransformation.None,
-                    passwordVisibilityIcon = R.drawable.ic_password_invisible
-                )
-            }
+            currentState.copy(
+                showPassword = !currentState.showPassword,
+                passwordVisibility = if (currentState.showPassword) PasswordVisualTransformation() else VisualTransformation.None,
+                passwordVisibilityIcon = if (currentState.showPassword) R.drawable.ic_password_visible else R.drawable.ic_password_invisible
+            )
         }
     }
 
     fun changeConfirmPasswordVisibility() {
         _authenticationUIState.update { currentState ->
-            if (currentState.showConfirmPassword) {
-                currentState.copy(
-                    showConfirmPassword = false,
-                    confirmPasswordVisibility = PasswordVisualTransformation(),
-                    confirmPasswordVisibilityIcon = R.drawable.ic_password_visible
-                )
-            } else {
-                currentState.copy(
-                    showConfirmPassword = true,
-                    confirmPasswordVisibility = VisualTransformation.None,
-                    confirmPasswordVisibilityIcon = R.drawable.ic_password_invisible
-                )
-            }
+            currentState.copy(
+                showConfirmPassword = !currentState.showConfirmPassword,
+                confirmPasswordVisibility = if (currentState.showConfirmPassword) PasswordVisualTransformation() else VisualTransformation.None,
+                confirmPasswordVisibilityIcon = if (currentState.showConfirmPassword) R.drawable.ic_password_visible else R.drawable.ic_password_invisible
+            )
         }
     }
 
     fun checkLoginForm() {
-        if (emailInput.isNotEmpty() && passwordInput.isNotEmpty()) {
-            _authenticationUIState.update { currentState ->
-                currentState.copy(
-                    buttonEnabled = true
-                )
-            }
-        } else {
-            _authenticationUIState.update { currentState ->
-                currentState.copy(
-                    buttonEnabled = false
-                )
-            }
+        _authenticationUIState.update { currentState ->
+            currentState.copy(buttonEnabled = emailInput.isNotEmpty() && passwordInput.isNotEmpty())
         }
     }
 
     fun checkRegisterForm() {
-        if (emailInput.isNotEmpty() && passwordInput.isNotEmpty() && usernameInput.isNotEmpty() && confirmPasswordInput.isNotEmpty() && passwordInput == confirmPasswordInput) {
-            _authenticationUIState.update { currentState ->
-                currentState.copy(
-                    buttonEnabled = true
-                )
-            }
-        } else {
-            _authenticationUIState.update { currentState ->
-                currentState.copy(
-                    buttonEnabled = false
-                )
-            }
+        _authenticationUIState.update { currentState ->
+            currentState.copy(
+                buttonEnabled = emailInput.isNotEmpty() && passwordInput.isNotEmpty() &&
+                        usernameInput.isNotEmpty() && confirmPasswordInput.isNotEmpty() &&
+                        passwordInput == confirmPasswordInput
+            )
         }
     }
 
     fun checkButtonEnabled(isEnabled: Boolean): Color {
-        if (isEnabled) {
-            return Color.Blue
-        }
-
-        return Color.LightGray
+        return if (isEnabled) Color.Blue else Color.LightGray
     }
 
     fun registerUser(navController: NavHostController) {
         viewModelScope.launch {
-            dataStatus = AuthenticationStatusUIState.Loading
-
             try {
-                val call = authenticationRepository.register(usernameInput, emailInput, passwordInput)
-
-                call.enqueue(object: Callback<UserResponse> {
-                    override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
-                        if (res.isSuccessful) {
-                            val responseData = res.body()!!.data
-                            Log.d("response-data", "RESPONSE DATA: $responseData")
-
-                            saveUsernameToken(responseData.token!!)
-                            saveUsernameId(responseData.id!!)
-
-                            dataStatus = AuthenticationStatusUIState.Success(responseData)
-
-                            resetViewModel()
-
-                            // Call onRegisterSuccess function
-                            onRegisterSuccess(responseData.token, responseData.id, navController)
-                        } else {
-                            val errorMessage = Gson().fromJson(
-                                res.errorBody()!!.charStream(),
-                                ErrorModel::class.java
-                            )
-
-                            Log.d("error-data", "ERROR DATA: $errorMessage")
-                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errors)
-                        }
+                val response = withContext(Dispatchers.IO) {
+                    authenticationRepository.register(usernameInput, emailInput, passwordInput).execute()
+                }
+                if (response.isSuccessful) {
+                    response.body()?.data?.id?.let { id ->
+                        userRepository.saveUserId(id)
+                        Log.d("RegisterSuccess", "User ID saved: $id")
+                        onRegisterSuccess(response.body()?.data?.token.orEmpty(), id, navController)
+                    } ?: run {
+                        Log.e("RegisterError", "User ID is null")
                     }
-
-                    override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
-                        dataStatus = AuthenticationStatusUIState.Failed(t.localizedMessage)
-                    }
-                })
-            } catch (error: IOException) {
-                dataStatus = AuthenticationStatusUIState.Failed(error.localizedMessage)
-                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+                } else {
+                    Log.e("RegisterError", "Register failed: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("RegisterError", "Exception: ${e.message}")
             }
         }
     }
 
     fun loginUser(navController: NavHostController) {
         viewModelScope.launch {
-            dataStatus = AuthenticationStatusUIState.Loading
             try {
-                val call = authenticationRepository.login(emailInput, passwordInput)
-                call.enqueue(object: Callback<UserResponse> {
-                    override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
-                        if (res.isSuccessful) {
-                            val responseData = res.body()!!.data
-
-                            saveUsernameToken(responseData.token!!)
-                            saveUsernameId(responseData.id!!)
-
-                            dataStatus = AuthenticationStatusUIState.Success(responseData)
-
-                            resetViewModel()
-
-                            // Call onLoginSuccess function
-                            onLoginSuccess(responseData.token, responseData.id, navController)
-                        } else {
-                            val errorMessage = Gson().fromJson(
-                                res.errorBody()!!.charStream(),
-                                ErrorModel::class.java
-                            )
-
-                            Log.d("error-data", "ERROR DATA: ${errorMessage.errors}")
-                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errors)
-                        }
+                val response = withContext(Dispatchers.IO) {
+                    authenticationRepository.login(emailInput, passwordInput).execute()
+                }
+                if (response.isSuccessful) {
+                    response.body()?.data?.id?.let { id ->
+                        userRepository.saveUserId(id)
+                        onLoginSuccess(response.body()?.data?.token.orEmpty(), id, navController)
+                        Log.d("LoginSuccess", "User ID saved: $id")
+                    } ?: run {
+                        Log.e("LoginError", "User ID is null")
                     }
-
-                    override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                        dataStatus = AuthenticationStatusUIState.Failed(t.localizedMessage)
-                    }
-
-                })
-            } catch (error: IOException) {
-                dataStatus = AuthenticationStatusUIState.Failed(error.localizedMessage)
-                Log.d("register-error", "LOGIN ERROR: ${error.toString()}")
+                } else {
+                    Log.e("LoginError", "Login failed: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("LoginError", "Exception: ${e.message}")
             }
         }
+    }
+
+    fun onLoginSuccess(token: String, id: Int, navController: NavHostController) {
+        this.token = token
+        this.id = id
+        _userIdStateFlow.value = id  // Update state ID di AuthenticationViewModel
+        saveUsernameToken(token)
+        saveUsernameId(id)
+        navController.navigate(PagesEnum.Profile.name)
+    }
+
+    fun onRegisterSuccess(token: String, id: Int, navController: NavHostController) {
+        this.token = token
+        this.id = id
+        _userIdStateFlow.value = id  // Update state ID di AuthenticationViewModel
+        saveUsernameToken(token)
+        saveUsernameId(id)
+        navController.navigate(PagesEnum.Profile.name)
     }
 
     fun saveUsernameToken(token: String) {
@@ -248,41 +192,21 @@ class AuthenticationViewModel(
             userRepository.saveUserToken(token)
         }
     }
+
     fun saveUsernameId(id: Int) {
         viewModelScope.launch {
             userRepository.saveUserId(id)
         }
     }
 
-    // New method to handle login success
-    fun onLoginSuccess(token: String, id: Int, navController: NavHostController) {
-        this.token = token
-        this.id = id
-        // Save token and user data in local storage or shared preferences
-        saveUsernameToken(token) // Save token and userId if necessary
-        saveUsernameId(id)
-        // Navigate to the Profile page
-        navController.navigate(PagesEnum.Profile.name)
-    }
-
-    // New method to handle registration success
-    fun onRegisterSuccess(token: String, id: Int, navController: NavHostController) {
-        this.token = token
-        this.id = id
-        // Save token and user data in local storage or shared preferences
-        saveUsernameToken(token) // Save token and userId if necessary
-        saveUsernameId(id)
-        // Navigate to the Profile page
-        navController.navigate(PagesEnum.Profile.name)
-    }
-
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as CommunityApplication)
-                val authenticationRepository = application.container.authenticationRepository
-                val userRepository = application.container.userRepository
-                AuthenticationViewModel(authenticationRepository, userRepository)
+                AuthenticationViewModel(
+                    application.container.authenticationRepository,
+                    application.container.userRepository
+                )
             }
         }
     }

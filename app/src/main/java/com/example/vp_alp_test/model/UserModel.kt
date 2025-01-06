@@ -3,9 +3,16 @@ package com.example.vp_alp_test.model
 import com.google.gson.annotations.SerializedName
 
 data class UserResponse(
-    val data: UserModel,
-    val status: String
+
+    @SerializedName("data") val data: UserModel,
+    @SerializedName("status") val status: String
 )
+
+
+//data class UserData(
+//    val id: Int?,
+//    val token: String?
+//)
 
 data class UserModel(
     val id: Int,
@@ -21,9 +28,11 @@ data class UserModel(
 data class GetAllUser(
     val data: List<UserModel>
 )
+
 data class GetResponse(
     val data: UserModel
 )
+
 data class ProfileRequest(
     val username: String? = null,
     val email: String? = null,

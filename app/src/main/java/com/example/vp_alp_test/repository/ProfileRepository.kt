@@ -35,7 +35,7 @@ class NetworkProfileRepository(
     ): Call<GeneralResponseModel> {
         return profileService.createUserProfile(
             token,
-            ProfileRequest(username, email, avatar, bio)
+            ProfileRequest(avatar, bio)
         )
     }
 

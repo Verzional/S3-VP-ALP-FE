@@ -109,8 +109,8 @@ fun LoginView(
                             authenticationViewModel.changeEmailInput(it)
                             authenticationViewModel.checkLoginForm()
                         },
-                        labelText = "Username",
-                        placeholderText = "Username",
+                        labelText = "Email",
+                        placeholderText = "Email",
                         leadingIconSrc = painterResource(id = R.drawable.ic_email),
                         modifier = Modifier
                             .fillMaxWidth()

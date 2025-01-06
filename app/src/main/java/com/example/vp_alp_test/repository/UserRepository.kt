@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import retrofit2.Call
 
+
 interface UserRepository {
     val currentUserToken: Flow<String>
     val currentUserId: Flow<Int> // This will emit user ID asynchronously
