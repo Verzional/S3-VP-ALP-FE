@@ -1,4 +1,4 @@
-package com.example.vp_alp_test
+package com.example.vp_alp_test.util
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object AppClient {
-    private const val BASE_URL = "http://192.168.122.241:3000/"
+    const val BASE_URL = "http://192.168.1.4:3000/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

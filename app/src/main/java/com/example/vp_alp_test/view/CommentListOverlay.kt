@@ -39,7 +39,7 @@ import com.example.vp_alp_test.viewmodel.CommentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentOverlay(
+fun CommentListOverlay(
     postId: Int,
     viewModel: CommentViewModel,
     onClose: () -> Unit
@@ -127,7 +127,7 @@ fun CommentOverlay(
                             )
                         ) {
                             items(comments) { comment ->
-                                CommentCard(comment = comment)
+                                CommentListCard(comment = comment)
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
                         }

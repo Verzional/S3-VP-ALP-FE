@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,18 +27,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.vp_alp_test.enum.PostEnum
 import com.example.vp_alp_test.ui.theme.BackgroundBlue
+import com.example.vp_alp_test.ui.theme.ButtonPurple
 import com.example.vp_alp_test.uiState.PostUIState
 import com.example.vp_alp_test.viewmodel.CommentViewModel
 import com.example.vp_alp_test.viewmodel.LikeViewModel
 import com.example.vp_alp_test.viewmodel.PostViewModel
 
 @Composable
-fun PostView(
+fun PostListView(
     modifier: Modifier = Modifier,
     postViewModel: PostViewModel,
     likeViewModel: LikeViewModel,
-    commentViewModel: CommentViewModel
+    commentViewModel: CommentViewModel,
+    navController: NavController
 ) {
     val posts by postViewModel.posts.collectAsState()
     val uiState by postViewModel.postUIState.collectAsState()
@@ -81,31 +89,43 @@ fun PostView(
             }
 
             is PostUIState.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    itemsIndexed(
-                        items = (uiState as PostUIState.Success).posts,
-                        key = { _, post -> post.id }) { index, post ->
-                        PostCard(post = post,
-                            isLiked = userLikes.contains(post.id),
-                            likeCount = postLikeCount[post.id] ?: 0,
-                            commentCount = postCommentCount[post.id] ?: 0,
-                            onLikeClick = { likeViewModel.toggleLike(post.id) },
-                            onCommentClick = { selectedPostId = post.id })
+                Column(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        itemsIndexed(
+                            // Use posts from the Success state instead of casting
+                            items = posts, key = { _, post -> post.id }) { index, post ->
+                            PostListCard(post = post,
+                                isLiked = userLikes.contains(post.id),
+                                likeCount = postLikeCount[post.id] ?: 0,
+                                commentCount = postCommentCount[post.id] ?: 0,
+                                onLikeClick = { likeViewModel.toggleLike(post.id) },
+                                onCommentClick = { selectedPostId = post.id })
 
-                        if (index != (uiState as PostUIState.Success).posts.lastIndex) {
-                            Column(
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            ) {
-                                Spacer(Modifier.padding(vertical = 4.dp))
-
-                                HorizontalDivider(thickness = 0.5.dp, color = Color.White)
-
-                                Spacer(Modifier.padding(top = 4.dp, bottom = 8.dp))
+                            if (index != posts.lastIndex) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                ) {
+                                    Spacer(Modifier.padding(vertical = 4.dp))
+                                    HorizontalDivider(thickness = 0.5.dp, color = Color.White)
+                                    Spacer(Modifier.padding(top = 4.dp, bottom = 8.dp))
+                                }
                             }
                         }
                     }
+                }
+
+                FloatingActionButton(
+                    onClick = { navController.navigate(PostEnum.POST_CREATION.route) },
+                    containerColor = ButtonPurple,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomEnd),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add, contentDescription = "Create Post"
+                    )
                 }
             }
 
@@ -126,8 +146,7 @@ fun PostView(
         }
 
         selectedPostId?.let { postId ->
-            CommentOverlay(postId = postId, viewModel = commentViewModel, onClose = {
-                // Refresh counts when comment overlay is closed
+            CommentListOverlay(postId = postId, viewModel = commentViewModel, onClose = {
                 likeViewModel.loadPostLikes(postId)
                 commentViewModel.loadPostComments(postId)
                 selectedPostId = null

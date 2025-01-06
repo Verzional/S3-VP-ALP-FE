@@ -26,7 +26,7 @@ import com.example.vp_alp_test.model.CommentModel
 import com.example.vp_alp_test.ui.theme.CommentBlue
 
 @Composable
-fun CommentCard(
+fun CommentListCard(
     comment: CommentModel,
     modifier: Modifier = Modifier
 ) {
