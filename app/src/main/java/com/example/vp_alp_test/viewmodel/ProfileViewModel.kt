@@ -38,7 +38,8 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
                         _profileState.value = ProfileUIState.Failed("User data not found")
                     }
                 } else {
-                    _profileState.value = ProfileUIState.Failed("Failed to fetch profile: ${response.message()}")
+                    _profileState.value =
+                        ProfileUIState.Failed("Failed to fetch profile: ${response.message()}")
                 }
             } catch (e: Exception) {
                 _profileState.value = ProfileUIState.Failed("An error occurred: ${e.message}")
@@ -48,11 +49,18 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
 
 
     // Create user profile
-    fun createUserProfile(token: String, username: String?, email: String?, avatar: String?, bio: String?) {
+    fun createUserProfile(
+        token: String,
+        username: String?,
+        email: String?,
+        avatar: String?,
+        bio: String?
+    ) {
         _actionState.value = ProfileUIState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.createUserProfile(token, username, email, avatar, bio).awaitResponse()
+                val response = repository.createUserProfile(token, username, email, avatar, bio)
+                    .awaitResponse()
                 if (response.isSuccessful) {
                     _actionState.value = ProfileUIState.Success(
                         UserModel(
@@ -67,7 +75,8 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
                         )
                     )
                 } else {
-                    _actionState.value = ProfileUIState.Failed("Failed to create profile: ${response.message()}")
+                    _actionState.value =
+                        ProfileUIState.Failed("Failed to create profile: ${response.message()}")
                 }
             } catch (e: Exception) {
                 _actionState.value = ProfileUIState.Failed("An error occurred: ${e.message}")
@@ -76,26 +85,42 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
     }
 
     // Update user profile
-    fun updateUserProfile(token: String, id: Int, username: String?, email: String?, avatar: String?, bio: String?) {
+    fun updateUserProfile(
+        token: String,
+        id: Int,
+        username: String?,
+        email: String?,
+        avatar: String?,
+        bio: String?
+    ) {
         _actionState.value = ProfileUIState.Loading
         viewModelScope.launch {
             try {
-                val response = repository.updateUserProfile(token, id, username, email, avatar, bio).awaitResponse()
+                val response = repository.updateUserProfile(token, id, username, email, avatar, bio)
+                    .awaitResponse()
                 if (response.isSuccessful) {
-                    _actionState.value = ProfileUIState.Success(
-                        UserModel(
-                            id = id,
-                            username = username ?: "",
-                            email = email ?: "",
-                            avatar = avatar,
-                            bio = bio,
-                            createdAt = "", // Replace with actual value if needed
-                            updatedAt = "", // Replace with actual value if needed
-                            token = token
+                    val updatedUser = response.body()?.data
+                    if (updatedUser != null) {
+                        _actionState.value = ProfileUIState.Success(
+                            UserModel(
+                                id = id,
+                                username = username ?: "",
+                                email = email ?: "",
+                                avatar = avatar ?: "",
+                                bio = bio ?: "",
+                                createdAt = "", // Replace with actual value if needed
+                                updatedAt = "", // Replace with actual value if needed
+                                token = token
+                            )
                         )
-                    )
+
+                    } else {
+                        _actionState.value =
+                            ProfileUIState.Failed("Failed to update profile: Invalid data received")
+                    }
                 } else {
-                    _actionState.value = ProfileUIState.Failed("Failed to update profile: ${response.message()}")
+                    _actionState.value =
+                        ProfileUIState.Failed("Failed to update profile: ${response.message()}")
                 }
             } catch (e: Exception) {
                 _actionState.value = ProfileUIState.Failed("An error occurred: ${e.message}")
@@ -123,7 +148,8 @@ class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() 
                         )
                     )
                 } else {
-                    _actionState.value = ProfileUIState.Failed("Failed to delete profile: ${response.message()}")
+                    _actionState.value =
+                        ProfileUIState.Failed("Failed to delete profile: ${response.message()}")
                 }
             } catch (e: Exception) {
                 _actionState.value = ProfileUIState.Failed("An error occurred: ${e.message}")

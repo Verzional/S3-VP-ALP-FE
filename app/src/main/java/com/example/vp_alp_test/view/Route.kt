@@ -1,6 +1,5 @@
 package com.example.vp_alp_test.view
 
-import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -14,8 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todolistapp.enums.PagesEnum
+import com.example.vp_alp_test.model.UserModel
 import com.example.vp_alp_test.viewmodel.AuthenticationViewModel
 import com.example.vp_alp_test.viewmodel.ProfileViewModel
+import okhttp3.internal.userAgent
 
 @Composable
 fun App(
@@ -64,15 +65,11 @@ fun App(
         }
 
         composable(route = PagesEnum.Profile.name) {
-            ProfileView(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                profileViewModel = profileViewModel,
-                navController = navController,
-                token = token,
-                id = id,
-                context = localContext
+            ProfileContent(
+                profileViewModel,
+                token,
+                id,
+                userModel = UserModel(id,"","","","","","","")
             )
         }
     }

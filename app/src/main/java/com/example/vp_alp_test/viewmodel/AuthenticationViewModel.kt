@@ -17,13 +17,10 @@ import androidx.navigation.NavHostController
 import com.example.todolistapp.enums.PagesEnum
 import com.example.vp_alp_test.R
 import com.example.vp_alp_test.CommunityApplication
-import com.example.vp_alp_test.model.ErrorModel
-import com.example.vp_alp_test.model.UserResponse
 import com.example.vp_alp_test.repository.AuthenticationRepository
 import com.example.vp_alp_test.repository.UserRepository
 import com.example.vp_alp_test.uiState.AuthenticationStatusUIState
 import com.example.vp_alp_test.uiState.AuthenticationUIState
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,10 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.IOException
+
 
 class AuthenticationViewModel(
     private val authenticationRepository: AuthenticationRepository,
