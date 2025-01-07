@@ -43,7 +43,7 @@ fun PostListCard(
     onLikeClick: () -> Unit,
     onCommentClick: () -> Unit
 ) {
-    val baseURL = "http://192.168.1.4:3000"
+    val baseURL = "http://10.0.52.150:3000"
 
     Card(
         modifier = Modifier.fillMaxWidth(),

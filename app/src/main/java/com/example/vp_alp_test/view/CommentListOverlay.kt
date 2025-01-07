@@ -40,9 +40,7 @@ import com.example.vp_alp_test.viewmodel.CommentViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentListOverlay(
-    postId: Int,
-    viewModel: CommentViewModel,
-    onClose: () -> Unit
+    postId: Int, viewModel: CommentViewModel, onClose: () -> Unit
 ) {
     val comments by viewModel.comments.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -89,8 +87,7 @@ fun CommentListOverlay(
                 when {
                     isLoading -> {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(color = Color.White)
                         }
@@ -106,24 +103,18 @@ fun CommentListOverlay(
 
                     comments.isEmpty() -> {
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "No comments yet",
-                                color = Color.White,
-                                fontSize = 16.sp
+                                text = "No comments yet", color = Color.White, fontSize = 16.sp
                             )
                         }
                     }
 
                     else -> {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(
-                                start = 8.dp,
-                                end = 8.dp,
-                                bottom = 8.dp
+                            modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(
+                                start = 8.dp, end = 8.dp, bottom = 8.dp
                             )
                         ) {
                             items(comments) { comment ->
@@ -147,8 +138,7 @@ fun CommentListOverlay(
                     onValueChange = { viewModel.updateCommentText(it) },
                     placeholder = {
                         Text(
-                            "Add a comment...",
-                            color = Color.White.copy(alpha = 0.6f)
+                            "Add a comment...", color = Color.White.copy(alpha = 0.6f)
                         )
                     },
                     modifier = Modifier
@@ -166,8 +156,7 @@ fun CommentListOverlay(
                 IconButton(
                     onClick = {
                         viewModel.addComment(postId)
-                    },
-                    enabled = commentText.isNotBlank()
+                    }, enabled = commentText.isNotBlank()
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,

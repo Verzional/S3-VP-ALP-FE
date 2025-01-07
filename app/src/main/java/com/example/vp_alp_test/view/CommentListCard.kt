@@ -27,8 +27,7 @@ import com.example.vp_alp_test.ui.theme.CommentBlue
 
 @Composable
 fun CommentListCard(
-    comment: CommentModel,
-    modifier: Modifier = Modifier
+    comment: CommentModel, modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -36,12 +35,10 @@ fun CommentListCard(
         shape = RectangleShape
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.luffy),
@@ -62,9 +59,7 @@ fun CommentListCard(
                         color = Color.White
                     )
                     Text(
-                        text = comment.content,
-                        fontSize = 14.sp,
-                        color = Color.White
+                        text = comment.content, fontSize = 14.sp, color = Color.White
                     )
                 }
             }

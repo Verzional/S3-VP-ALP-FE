@@ -124,8 +124,7 @@ fun PostCreationView(
         }
     }, content = { paddingValues ->
         Column(
-            modifier = Modifier
-                .padding(paddingValues)
+            modifier = Modifier.padding(paddingValues)
         ) {
             PostCreationForm(title = title,
                 content = content,

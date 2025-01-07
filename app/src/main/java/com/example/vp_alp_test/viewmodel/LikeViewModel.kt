@@ -31,8 +31,8 @@ class LikeViewModel : ViewModel() {
 
                 if (isCurrentlyLiked) {
                     // Unlike
-                    val existingLike = repository.getLikesForPost(postId)
-                        .firstOrNull { it.userId == 1 }
+                    val existingLike =
+                        repository.getLikesForPost(postId).firstOrNull { it.userId == 1 }
 
                     if (existingLike != null) {
                         // Update UI state immediately for better UX
@@ -55,9 +55,7 @@ class LikeViewModel : ViewModel() {
 
                     // Then perform the API call
                     val newLike = LikeModel(
-                        id = 0,
-                        postId = postId,
-                        userId = 1
+                        id = 0, postId = postId, userId = 1
                     )
 
                     val addedLike = repository.likePost(newLike)

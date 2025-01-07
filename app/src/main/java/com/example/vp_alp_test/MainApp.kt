@@ -30,21 +30,16 @@ fun MainApp() {
             )
         }
         composable(PostEnum.POST_CREATION.route) {
-            PostCreationView(
-                onNavigationBack = {
-                    navController.navigate(PostEnum.POST_LIST.route) {
-                        popUpTo(PostEnum.POST_LIST.route) { inclusive = true }
-                    }
-                },
-                onPostCreated = {
-                    // First navigate back
-                    navController.navigate(PostEnum.POST_LIST.route) {
-                        popUpTo(PostEnum.POST_LIST.route) { inclusive = true }
-                    }
-                    // Then ensure we reload posts after a slight delay to allow navigation to complete
-                    postViewModel.loadPosts()
-                },
-                viewModel = postViewModel  // Pass the shared viewModel instance
+            PostCreationView(onNavigationBack = {
+                navController.navigate(PostEnum.POST_LIST.route) {
+                    popUpTo(PostEnum.POST_LIST.route) { inclusive = true }
+                }
+            }, onPostCreated = {
+                navController.navigate(PostEnum.POST_LIST.route) {
+                    popUpTo(PostEnum.POST_LIST.route) { inclusive = true }
+                }
+                postViewModel.loadPosts()
+            }, viewModel = postViewModel  // Pass the shared viewModel instance
             )
         }
     }
