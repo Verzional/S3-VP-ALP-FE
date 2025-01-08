@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,6 +50,7 @@ fun ProfileContent(
     // Collect profile state from ViewModel
     val profileState by profileViewModel.profileState.collectAsState()
     val actionState by profileViewModel.actionState.collectAsState()
+    val logoutStatus by profileViewModel.logoutStatus.observeAsState(initial = null) // Fix: Provide an initial value
 
     // Local states for profile data
     var username by remember { mutableStateOf(userModel.username) }
@@ -122,6 +124,18 @@ fun ProfileContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Logout Button
+        Button(
+            onClick = {
+                profileViewModel.logoutUser()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Logout")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Action state feedback
         when (actionState) {
             is ProfileUIState.Loading -> CircularProgressIndicator(color = Color.White)
@@ -136,6 +150,23 @@ fun ProfileContent(
                 fontSize = 14.sp
             )
             else -> {}
+        }
+
+        // Logout feedback
+        logoutStatus?.let { result ->
+            if (result.isSuccess) {
+                Text(
+                    text = "Logged out successfully!",
+                    color = Color.Green,
+                    fontSize = 14.sp
+                )
+            } else {
+                Text(
+                    text = "Logout failed: ${result.exceptionOrNull()?.message}",
+                    color = Color.Red,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }

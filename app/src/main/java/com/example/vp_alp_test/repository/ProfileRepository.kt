@@ -1,12 +1,11 @@
 package com.example.vp_alp_test.repository
 
+import android.util.Log
 import com.example.vp_alp_test.model.GeneralResponseModel
 import com.example.vp_alp_test.model.GetResponse
 import com.example.vp_alp_test.model.ProfileRequest
-import com.example.vp_alp_test.model.UserModel
 import com.example.vp_alp_test.service.ProfileService
 import retrofit2.Call
-import retrofit2.Response
 
 interface ProfileRepository {
     fun getUserProfile(token: String, id: Int): Call<GetResponse>
@@ -22,8 +21,15 @@ class NetworkProfileRepository(
     private val profileService: ProfileService
 ) : ProfileRepository {
 
+    private companion object {
+        const val TAG = "NetworkProfileRepository"
+    }
+
     override fun getUserProfile(token: String, id: Int): Call<GetResponse> {
-        return profileService.getUserProfile("Bearer $token", id)
+        Log.d(TAG, "Fetching user profile with token: $token and id: $id")
+        val call = profileService.getUserProfile("Bearer $token", id)
+        Log.d(TAG, "getUserProfile Call initiated.")
+        return call
     }
 
     override fun createUserProfile(
@@ -33,10 +39,14 @@ class NetworkProfileRepository(
         avatar: String?,
         bio: String?
     ): Call<GeneralResponseModel> {
-        return profileService.createUserProfile(
+        Log.d(TAG, "Creating user profile with token: $token")
+        Log.d(TAG, "Profile details: username=$username, email=$email, avatar=$avatar, bio=$bio")
+        val call = profileService.createUserProfile(
             token,
             ProfileRequest(avatar, bio)
         )
+        Log.d(TAG, "createUserProfile Call initiated.")
+        return call
     }
 
     override fun updateUserProfile(
@@ -47,14 +57,21 @@ class NetworkProfileRepository(
         avatar: String?,
         bio: String?
     ): Call<GeneralResponseModel> {
-        return profileService.updateUserProfile(
+        Log.d(TAG, "Updating user profile with token: $token and id: $id")
+        Log.d(TAG, "Updated details: username=$username, email=$email, avatar=$avatar, bio=$bio")
+        val call = profileService.updateUserProfile(
             token,
             id,
             ProfileRequest(username, email, avatar, bio)
         )
+        Log.d(TAG, "updateUserProfile Call initiated.")
+        return call
     }
 
     override fun deleteUserProfile(token: String, id: Int): Call<GeneralResponseModel> {
-        return profileService.deleteUserProfile(token, id)
+        Log.d(TAG, "Deleting user profile with token: $token and id: $id")
+        val call = profileService.deleteUserProfile(token, id)
+        Log.d(TAG, "deleteUserProfile Call initiated.")
+        return call
     }
 }
