@@ -19,29 +19,30 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vp_alp_test.R
+import com.example.vp_alp_test.model.CommentModel
 import com.example.vp_alp_test.ui.theme.CommentBlue
 
 @Composable
-fun CommentCard() {
+fun CommentListCard(
+    comment: CommentModel, modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(CommentBlue),
         shape = RectangleShape
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.luffy),
-                    contentDescription = "Dummy Image",
+                    contentDescription = "User Avatar",
                     modifier = Modifier
                         .size(54.dp)
                         .padding(4.dp)
@@ -52,13 +53,13 @@ fun CommentCard() {
                     modifier = Modifier.padding(start = 4.dp)
                 ) {
                     Text(
-                        text = "Verzional",
+                        text = "User ${comment.userId}",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         color = Color.White
                     )
                     Text(
-                        text = "Dummy Comment", fontSize = 14.sp, color = Color.White
+                        text = comment.content, fontSize = 14.sp, color = Color.White
                     )
                 }
             }
