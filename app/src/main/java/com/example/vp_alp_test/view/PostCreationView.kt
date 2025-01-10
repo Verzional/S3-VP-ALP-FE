@@ -87,39 +87,36 @@ fun PostCreationView(
 
     Scaffold(topBar = {
         Column {
-            PostCreationTopAppBar(
-                onNavigationIconClick = onNavigationBack,
-                onAttachmentClick = {
-                    when {
-                        // Use Photo Picker for Android 14+
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
-                            photoPicker.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        }
-                        // Use legacy picker with permission check for older versions
-                        else -> {
-                            if (PermissionHandler.hasRequiredPermissions(context)) {
-                                legacyImagePicker.launch("image/*")
-                            } else {
-                                permissionLauncher.launch(PermissionHandler.getRequiredPermissions())
-                            }
-                        }
-                    }
-                },
-                onSubmitClick = {
-                    if (title.isNotEmpty() && content.isNotEmpty()) {
-                        val post = PostModel(
-                            id = 0,
-                            title = title,
-                            content = content,
-                            userId = 1,
-                            communityId = 1
+            PostCreationTopAppBar(onNavigationIconClick = onNavigationBack, onAttachmentClick = {
+                when {
+                    // Use Photo Picker for Android 14+
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
+                        photoPicker.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
-                        viewModel.createPost(post, context)
-                        onPostCreated()
                     }
-                })
+                    // Use legacy picker with permission check for older versions
+                    else -> {
+                        if (PermissionHandler.hasRequiredPermissions(context)) {
+                            legacyImagePicker.launch("image/*")
+                        } else {
+                            permissionLauncher.launch(PermissionHandler.getRequiredPermissions())
+                        }
+                    }
+                }
+            }, onSubmitClick = {
+                if (title.isNotEmpty() && content.isNotEmpty()) {
+                    val post = PostModel(
+                        id = 0,
+                        title = title,
+                        content = content,
+                        userId = 1,
+                        communityId = 1
+                    )
+                    viewModel.createPost(post, context)
+                    onPostCreated()
+                }
+            })
             HorizontalDivider(thickness = 0.5.dp, color = Color.White)
         }
     }, content = { paddingValues ->

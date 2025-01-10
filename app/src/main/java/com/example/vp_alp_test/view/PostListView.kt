@@ -52,12 +52,10 @@ fun PostListView(
 
     var selectedPostId by remember { mutableStateOf<Int?>(null) }
 
-    // Initial load of posts
     LaunchedEffect(Unit) {
         postViewModel.loadPosts()
     }
 
-    // Load likes and comments whenever posts change
     LaunchedEffect(posts) {
         posts.forEach { post ->
             likeViewModel.loadPostLikes(post.id)
@@ -65,10 +63,8 @@ fun PostListView(
         }
     }
 
-    // Maintain likes and comments state
     LaunchedEffect(selectedPostId) {
         selectedPostId?.let { postId ->
-            // Refresh counts when comment overlay is opened
             likeViewModel.loadPostLikes(postId)
             commentViewModel.loadPostComments(postId)
         }
@@ -94,7 +90,6 @@ fun PostListView(
                         modifier = Modifier.weight(1f)
                     ) {
                         itemsIndexed(
-                            // Use posts from the Success state instead of casting
                             items = posts, key = { _, post -> post.id }) { index, post ->
                             PostListCard(post = post,
                                 isLiked = userLikes.contains(post.id),
