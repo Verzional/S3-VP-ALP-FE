@@ -149,7 +149,8 @@ class ProfileViewModel(
                     } else {
                         val error = "Invalid data received"
                         Log.e(TAG, error)
-                        _actionState.value = ProfileUIState.Failed("Failed to update profile: $error")
+                        _actionState.value =
+                            ProfileUIState.Failed("Failed to update profile: $error")
                     }
                 } else {
                     val error = "Failed to update profile: ${response.message()}"
@@ -163,13 +164,18 @@ class ProfileViewModel(
         }
     }
 
-    // Logout user
     fun logoutUser() {
         Log.d(TAG, "Logging out user")
         viewModelScope.launch {
             try {
                 val token = userRepository.currentUserToken.first()
-                Log.d(TAG, "User token: $token")
+                if (token.isBlank()) {
+                    Log.e(TAG, "Logout failed: Token is blank")
+                    _logoutStatus.postValue(
+                        Result.failure(Exception("Logout failed: Invalid token"))
+                    )
+                    return@launch
+                }
 
                 val logoutCall = userRepository.logout(token)
                 logoutCall.enqueue(object : Callback<GeneralResponseModel> {

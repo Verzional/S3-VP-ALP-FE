@@ -27,10 +27,25 @@ class NetworkProfileRepository(
 
     override fun getUserProfile(token: String, id: Int): Call<GetResponse> {
         Log.d(TAG, "Fetching user profile with token: $token and id: $id")
+
+        // Call the API
         val call = profileService.getUserProfile("Bearer $token", id)
-        Log.d(TAG, "getUserProfile Call initiated.")
+
+        // Debugging the Call object
+        call.request().let { request ->
+            Log.d(TAG, "Request URL: ${request.url}")
+            Log.d(TAG, "Request Headers: ${request.headers}")
+            Log.d(TAG, "Request Method: ${request.method}")
+            if (request.body != null) {
+                Log.d(TAG, "Request Body: ${request.body}")
+            } else {
+                Log.d(TAG, "Request Body: None")
+            }
+        }
+
         return call
     }
+
 
     override fun createUserProfile(
         token: String,

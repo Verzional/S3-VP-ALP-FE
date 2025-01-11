@@ -72,8 +72,13 @@ class NetworkUserRepository(
 
     override fun logout(token: String): Call<GeneralResponseModel> {
         Log.d(TAG, "Logging out user with token: $token")
+        if (token.isBlank()) {
+            Log.e(TAG, "Logout failed: Token is blank")
+            throw IllegalArgumentException("Invalid token: Token cannot be blank")
+        }
         return userAPIService.logout(token)
     }
+
 
     // Helper function to retrieve the saved user ID synchronously if needed
     suspend fun getUserId(): Int {

@@ -1,6 +1,5 @@
 package com.example.vp_alp_test.repository
 
-import com.example.vp_alp_test.AppClient
 import com.example.vp_alp_test.model.UserResponse
 import com.example.vp_alp_test.service.AuthenticationAPIService
 import kotlinx.coroutines.Dispatchers

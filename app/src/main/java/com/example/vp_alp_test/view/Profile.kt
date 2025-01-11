@@ -86,7 +86,7 @@ fun ProfileContent(
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
-                model = if (avatar.isNotEmpty()) avatar else R.drawable.baseline_account_circle_24,
+                model = avatar.ifEmpty { R.drawable.baseline_account_circle_24 },
                 contentDescription = "Avatar",
                 modifier = Modifier.size(100.dp),
                 contentScale = ContentScale.Crop,
