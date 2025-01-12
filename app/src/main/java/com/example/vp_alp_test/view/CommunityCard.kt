@@ -35,9 +35,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberAsyncImagePainter
 import com.example.vp_alp_test.model.Community
 import com.example.vp_alp_test.R
+import com.example.vp_alp_test.model.CommunityUserModel
 
 @Composable
-fun CommunityCard(community: Community, modifier: Modifier = Modifier) {
+fun CommunityCard(community: Community,
+                  communityUserModel: CommunityUserModel,
+                  modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .width(200.dp)
@@ -54,7 +57,7 @@ fun CommunityCard(community: Community, modifier: Modifier = Modifier) {
         ) {
             // Community Avatar
             Image(
-                painter = rememberAsyncImagePainter(community.avatar ?: R.drawable.default_avatar),
+                painter = rememberAsyncImagePainter(community.avatar ?: R.drawable.default_avatar), //belom ada avatar untuk community
                 contentDescription = "${community.name} Avatar",
                 modifier = Modifier
                     .size(80.dp)
@@ -88,7 +91,7 @@ fun CommunityCard(community: Community, modifier: Modifier = Modifier) {
 
             // Total Members
             Text(
-                text = "${community.totalMembers} Members",
+                text = "${communityUserModel.user} Members",
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
