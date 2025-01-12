@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.vp_alp_test"
+    namespace = "com.example.alp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.vp_alp_test"
+        applicationId = "com.example.alp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
