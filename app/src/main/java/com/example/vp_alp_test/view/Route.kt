@@ -16,7 +16,6 @@ import com.example.todolistapp.enums.PagesEnum
 import com.example.vp_alp_test.model.UserModel
 import com.example.vp_alp_test.viewmodel.AuthenticationViewModel
 import com.example.vp_alp_test.viewmodel.ProfileViewModel
-import okhttp3.internal.userAgent
 
 @Composable
 fun App(
@@ -69,7 +68,7 @@ fun App(
                 profileViewModel,
                 token,
                 id,
-                userModel = UserModel(id,"","","","","","","")
+                userModel = UserModel(id, "", "", "", "", "", "", "")
             )
         }
     }

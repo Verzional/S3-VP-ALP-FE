@@ -1,10 +1,7 @@
 package com.example.vp_alp_test
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import com.example.vp_alp_test.repository.AuthenticationRepository
 import com.example.vp_alp_test.repository.NetworkAuthenticationRepository
 import com.example.vp_alp_test.repository.NetworkProfileRepository
@@ -30,9 +27,9 @@ interface AppContainer {
 
 class DefaultAppContainer(
     private val userDataStore: DataStore<Preferences>
-): AppContainer {
+) : AppContainer {
     // change it to your own local ip please
-    private val baseUrl = "http://10.0.12.126:3000/"
+    private val baseUrl = "http://localhost:3000/"
 
     // RETROFIT SERVICE
     // delay object creation until needed using lazy

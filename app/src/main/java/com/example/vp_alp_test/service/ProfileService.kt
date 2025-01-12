@@ -13,15 +13,28 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ProfileService {
-    @GET("/profile/{id}")
-    fun getUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int): Call<GetResponse>
+    @GET("profile/{id}")
+    fun getUserProfile(
+        @Header("X-API-TOKEN") token: String, @Path("id") id: Int
+    ): Call<GetResponse>
 
-    @POST("/profile/{id}")
-    fun createUserProfile(@Header("X-API-TOKEN") token: String, @Body UserModel: ProfileRequest): Call<GeneralResponseModel>
+    @POST("profile/{id}")
+    fun createUserProfile(
+        @Header("X-API-TOKEN") token: String, @Body UserModel: ProfileRequest
+    ): Call<GeneralResponseModel>
 
-    @PUT("/updateProfile/{id}")
-    fun updateUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int, @Body UserModel: ProfileRequest): Call<GeneralResponseModel>
+    @PUT("updateProfile/{id}")
+    fun updateUserProfile(
+        @Header("X-API-TOKEN") token: String, @Path("id") id: Int, @Body UserModel: ProfileRequest
+    ): Call<GeneralResponseModel>
+
+    @PUT("updateProfile/{id}")
+    fun updateUserProfileWithAvatar(
+        @Header("X-API-TOKEN") token: String, @Path("id") id: Int, @Body UserModel: ProfileRequest
+    ): Call<GeneralResponseModel>
 
     @DELETE("deleteProfile/{id}")
-    fun deleteUserProfile(@Header("X-API-TOKEN") token: String, @Path("id") id: Int): Call<GeneralResponseModel>
+    fun deleteUserProfile(
+        @Header("X-API-TOKEN") token: String, @Path("id") id: Int
+    ): Call<GeneralResponseModel>
 }

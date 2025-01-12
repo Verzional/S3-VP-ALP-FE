@@ -10,9 +10,13 @@ import retrofit2.Call
 interface ProfileRepository {
     fun getUserProfile(token: String, id: Int): Call<GetResponse>
 
-    fun createUserProfile(token: String, username: String?, email: String?, avatar: String?, bio: String?): Call<GeneralResponseModel>
+    fun createUserProfile(
+        token: String, username: String?, email: String?, avatar: String?, bio: String?
+    ): Call<GeneralResponseModel>
 
-    fun updateUserProfile(token: String, id: Int, username: String?, email: String?, avatar: String?, bio: String?): Call<GeneralResponseModel>
+    fun updateUserProfile(
+        token: String, id: Int, username: String?, email: String?, avatar: String?, bio: String?
+    ): Call<GeneralResponseModel>
 
     fun deleteUserProfile(token: String, id: Int): Call<GeneralResponseModel>
 }
@@ -27,57 +31,38 @@ class NetworkProfileRepository(
 
     override fun getUserProfile(token: String, id: Int): Call<GetResponse> {
         Log.d(TAG, "Fetching user profile with token: $token and id: $id")
+        // Remove the "Bearer " prefix if your API doesn't expect it
+        val call = profileService.getUserProfile(token, id)
 
-        // Call the API
-        val call = profileService.getUserProfile("Bearer $token", id)
-
-        // Debugging the Call object
+        // Debug logging
         call.request().let { request ->
             Log.d(TAG, "Request URL: ${request.url}")
             Log.d(TAG, "Request Headers: ${request.headers}")
             Log.d(TAG, "Request Method: ${request.method}")
-            if (request.body != null) {
-                Log.d(TAG, "Request Body: ${request.body}")
-            } else {
-                Log.d(TAG, "Request Body: None")
-            }
         }
 
         return call
     }
 
-
     override fun createUserProfile(
-        token: String,
-        username: String?,
-        email: String?,
-        avatar: String?,
-        bio: String?
+        token: String, username: String?, email: String?, avatar: String?, bio: String?
     ): Call<GeneralResponseModel> {
         Log.d(TAG, "Creating user profile with token: $token")
         Log.d(TAG, "Profile details: username=$username, email=$email, avatar=$avatar, bio=$bio")
         val call = profileService.createUserProfile(
-            token,
-            ProfileRequest(avatar, bio)
+            token, ProfileRequest(avatar, bio)
         )
         Log.d(TAG, "createUserProfile Call initiated.")
         return call
     }
 
     override fun updateUserProfile(
-        token: String,
-        id: Int,
-        username: String?,
-        email: String?,
-        avatar: String?,
-        bio: String?
+        token: String, id: Int, username: String?, email: String?, avatar: String?, bio: String?
     ): Call<GeneralResponseModel> {
         Log.d(TAG, "Updating user profile with token: $token and id: $id")
         Log.d(TAG, "Updated details: username=$username, email=$email, avatar=$avatar, bio=$bio")
         val call = profileService.updateUserProfile(
-            token,
-            id,
-            ProfileRequest(username, email, avatar, bio)
+            token, id, ProfileRequest(username, email, avatar, bio)
         )
         Log.d(TAG, "updateUserProfile Call initiated.")
         return call

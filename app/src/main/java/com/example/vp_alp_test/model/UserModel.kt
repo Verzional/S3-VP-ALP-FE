@@ -30,7 +30,13 @@ data class GetAllUser(
 )
 
 data class GetResponse(
-    val data: UserModel
+    val id: Int,
+    val username: String,
+    val email: String,
+    val createdAt: String,
+    val updatedAt: String,
+    val avatar: String? = null,
+    val bio: String? = null
 )
 
 data class ProfileRequest(

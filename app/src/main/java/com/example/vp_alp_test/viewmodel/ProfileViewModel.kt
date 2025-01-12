@@ -55,13 +55,25 @@ class ProfileViewModel(
             try {
                 val response = repository.getUserProfile(token, id).awaitResponse()
                 if (response.isSuccessful) {
-                    val user = response.body()?.data
-                    Log.d(TAG, "User profile fetched successfully: $user")
-                    if (user != null) {
-                        _profileState.value = ProfileUIState.Success(user)
+                    val responseData = response.body()
+                    Log.d(TAG, "Response received: $responseData")
+                    if (responseData != null) {
+                        // Convert GetResponse to UserModel
+                        val userModel = UserModel(
+                            id = responseData.id,
+                            username = responseData.username,
+                            email = responseData.email,
+                            avatar = responseData.avatar,
+                            bio = responseData.bio,
+                            createdAt = responseData.createdAt,
+                            updatedAt = responseData.updatedAt,
+                            token = token
+                        )
+                        Log.d(TAG, "User profile mapped to UserModel: $userModel")
+                        _profileState.value = ProfileUIState.Success(userModel)
                     } else {
-                        Log.e(TAG, "User data not found")
-                        _profileState.value = ProfileUIState.Failed("User data not found")
+                        Log.e(TAG, "Response body is null")
+                        _profileState.value = ProfileUIState.Failed("Failed to parse user data")
                     }
                 } else {
                     val error = "Failed to fetch profile: ${response.message()}"

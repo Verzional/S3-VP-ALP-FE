@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TodoListApp</string>
+    <string name="app_name">Connectify</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="usernameText">Username</string>
