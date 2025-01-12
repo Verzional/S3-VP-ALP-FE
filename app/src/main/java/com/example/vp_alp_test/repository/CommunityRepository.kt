@@ -10,7 +10,7 @@ import retrofit2.Call
 interface CommunityRepository {
     fun getCommunity(token: String, id: Int): Call<CommunityGetResponse>
 
-    fun createCommunity(token: String, name: String?, communityTags: List<String>?, avatar: String?, bio: String?): Call<GeneralResponseModel>
+    fun createCommunity(token: String, name: String?, communityTags: String, avatar: String?, bio: String?): Call<GeneralResponseModel>
 
     fun updateCommunity(token: String, id: Int, name: String?, communityTags: List<String>?, avatar: String?, bio: String?): Call<GeneralResponseModel>
 
@@ -28,7 +28,7 @@ class NetworkCommunityRepository(
     override fun createCommunity(
         token: String,
         name: String?,
-        communityTags: List<String>?,
+        communityTags: String,
         avatar: String?,
         bio: String?
     ): Call<GeneralResponseModel> {
