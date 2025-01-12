@@ -15,5 +15,5 @@ interface FriendService {
     @POST("friends")
     suspend fun createFriend(@Body post: String, userId: Int, friendId: Int): ResponseModel<FriendModel>
     @DELETE("friends/{id}")
-    suspend fun deleteFriend(@Path("id") postId: String, userId: Int, friendId: Int): ResponseModel<List<Friend>>
+    suspend fun deleteFriend(@Path("id") postId: String, userId: Int, friendId: Int): ResponseModel<List<FriendModel>>
 }

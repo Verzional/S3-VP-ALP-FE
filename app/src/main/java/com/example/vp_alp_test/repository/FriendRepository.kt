@@ -23,7 +23,7 @@ class FriendRepository {
     }
 
     // Menghapus teman (unfriend)
-    suspend fun removeFriend(token: String, userId: Int, friendId: Int): ResponseModel<List<Friend>> = withContext(Dispatchers.IO) {
+    suspend fun removeFriend(token: String, userId: Int, friendId: Int): ResponseModel<List<FriendModel>> = withContext(Dispatchers.IO) {
         val response = friendService.deleteFriend("Bearer $token", userId, friendId)
         if (response.status == "success") {
             response

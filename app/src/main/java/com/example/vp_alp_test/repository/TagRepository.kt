@@ -62,4 +62,18 @@ class TagRepository {
                 return@withContext null
             }
         }
+    suspend fun getTagById(tagId: Int): TagModel? = withContext(Dispatchers.IO) {
+        try {
+            val response = tagService.getTagById(tagId)
+            Log.d("TagRepository", "Response: $response")
+            if (response.isSuccessful) {
+                return@withContext response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("TagRepository", "Error fetching tag by ID", e)
+            null
+        }
+    }
 }
