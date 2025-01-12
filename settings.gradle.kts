@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VP_ALP_Test"
+rootProject.name = "ALP"
 include(":app")
  
