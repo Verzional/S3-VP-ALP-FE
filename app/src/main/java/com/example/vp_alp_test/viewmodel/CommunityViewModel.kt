@@ -64,7 +64,7 @@ class CommunityViewModel(private val communityRepository: CommunityRepository) :
     }
 
     // Refactored to handle image and use selectedImage (similar to createPost)
-    fun createCommunity(token: String, name: String?, tags: List<String>?, bio: String?, context: Context) {
+    fun createCommunity(token: String, name: String?, tags: String, bio: String?, context: Context) {
         viewModelScope.launch {
             try {
                 _communityUIState.value = CommunityUIState.Loading

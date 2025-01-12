@@ -10,11 +10,11 @@ import kotlinx.coroutines.withContext
 
 class CommunityUserRepository {
 
-    private val CommunityUserService = AppClient.retrofit.create(CommunityUserService::class.java)
+    private val communityUserService = AppClient.retrofit.create(CommunityUserService::class.java)
 
     suspend fun getMemberForCommunity(communityId:Int): List<CommunityUserModel> = withContext(Dispatchers.IO) {
         try {
-            val response = CommunityUserService.getMemberForCommunity(communityId)
+            val response = communityUserService.getMemberForCommunity(communityId)
             Log.d("CommunityUserRepository", "Response: $response")
             if (response.status == "success") {
                 response.data
@@ -28,7 +28,7 @@ class CommunityUserRepository {
     }
     suspend fun addmember(member: CommunityUserModel): CommunityUserModel? = withContext(Dispatchers.IO) {
         try {
-            val response = CommunityUserService.addMember(member)
+            val response = communityUserService.addMember(member)
             Log.d("CommunityUserRepository", "Response: $response")
             if (response.status == "success") {
                 response.data
@@ -43,7 +43,7 @@ class CommunityUserRepository {
 
     suspend fun deletemember(memberId: Int): Boolean = withContext(Dispatchers.IO) {
         try {
-            val response = CommunityUserService.deleteMember(memberId)
+            val response = communityUserService.deleteMember(memberId)
             Log.d("CommunityUserRepository", "Response: $response")
             response.status == "success"
         } catch (e: Exception) {
